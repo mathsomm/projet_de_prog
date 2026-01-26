@@ -28,5 +28,3 @@ class Graph:
         if node not in self._edges:
             return []
         return self._edges[node]
-
-ofiezfuzfuzfe
