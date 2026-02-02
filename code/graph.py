@@ -28,3 +28,34 @@ class Graph:
         if node not in self._edges:
             return []
         return self._edges[node]
+
+    def argmin_dico(dico):
+        m = float("inf")
+        mini = None
+        for i in dico:
+            if dico[i] < m:
+                mini = i
+                m = dico[i]
+        return mini
+
+    def shortest_path(self, depart, fin):
+        Vu = {}
+        DISTANCE = {v:float("inf") for v in self._edges}
+        PARENT  = {v:None for v in self._edges}
+
+        DISTANCE[depart] = 0
+
+        node = depart
+        while len(Vu) != len(self._edges):
+            
+            node_distance = DISTANCE[node]
+            for voisin, distance in self.neighbours(node):
+                voisin_distance = node_distance + distance
+                if voisin_distance < DISTANCE[voisin]: 
+                    PARENT[voisin] = node
+                    DISTANCE[voisin] = voisin_distance
+            
+            Vu[node] = DISTANCE[node]
+            del DISTANCE[node]
+            node = Graph.argmin_dico(DISTANCE)
+
