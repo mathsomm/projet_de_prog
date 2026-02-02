@@ -53,7 +53,7 @@ class Network:
     
    
 
-    def build_simple_graph(self):
+    def build_simple_graph(self) -> Graph:
         """
         Builds an object of type Graph from the network, by ignoring the fatigue coefficient. 
         """

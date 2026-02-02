@@ -45,7 +45,7 @@ class Graph:
                 if a[0] == path[i+1]: d+= a[1]
         return d
 
-    def shortest_path(self, depart, fin):
+    def shortest_path(self, depart, fin) -> tuple:
         Vu = {}
         DISTANCE = {v:float("inf") for v in self._edges}
         PARENT  = {v:None for v in self._edges}

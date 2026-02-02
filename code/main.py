@@ -7,3 +7,5 @@ network = Network.from_file(network_file)
 
 print("test commit push")
 print("test pull")
+
+n = Network.from_file("small").build_simple_graph()
