@@ -50,12 +50,30 @@ class Network:
                 roads.setdefault(j, [])
 
         return cls(roads=roads, start=start, end=end)
+    
+   
 
     def build_simple_graph(self):
         """
         Builds an object of type Graph from the network, by ignoring the fatigue coefficient. 
         """
-        # TODO: implement the method
-        raise NotImplementedError
+        edges={}
+        edge_fatigue=self._roads
+        for e in self._roads:
+            edges[e]=[]
+            for c in self._roads[e]:
+                edges[e].append((c[0],c[1]))
+        simple_graph=Graph(edges)
+        return simple_graph
+        
+network=Network({'v0': [('v1', 21, 2), ('v2', 12, 4)], 
+                        'v1': [('v0', 74, 2), ('v2', 32, 1)]})
+
+graph=network.build_simple_graph()
+print(graph._edges)
+
+
+
+    
 
 
