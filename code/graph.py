@@ -40,12 +40,13 @@ class Graph:
 
     def distance(self, path):
         d = 0
-        for i in range(len(path)-2):
+        for i in range(len(path)-1):
             for a in self._edges[path[i]]:
                 if a[0] == path[i+1]: d+= a[1]
         return d
 
     def shortest_path(self, depart, fin) -> tuple:
+        print(self._edges)
         Vu = {}
         DISTANCE = {v:float("inf") for v in self._edges}
         PARENT  = {v:None for v in self._edges}
@@ -56,9 +57,9 @@ class Graph:
         while len(Vu) != len(self._edges):
             
             node_distance = DISTANCE[node]
-            for voisin, distance in self.neighbours(node):
+            for (voisin, distance) in self.neighbours(node):
                 voisin_distance = node_distance + distance
-                if voisin_distance < DISTANCE[voisin]: 
+                if voisin not in Vu and voisin_distance < DISTANCE[voisin]: 
                     PARENT[voisin] = node
                     DISTANCE[voisin] = voisin_distance
             
@@ -69,7 +70,8 @@ class Graph:
         
         chemin = [fin]
         while chemin[-1] != depart:
-            chemin.append(PARENT(chemin[-1]))
+            chemin.append(PARENT[chemin[-1]])
         chemin.reverse()
-        return (distance(chemin), chemin)
+        print(chemin)
+        return (self.distance(chemin), chemin)
 
