@@ -72,8 +72,3 @@ network=Network({'v0': [('v1', 21, 2), ('v2', 12, 4)],
 graph=network.build_simple_graph()
 print(graph._edges)
 
-
-
-    
-
-
