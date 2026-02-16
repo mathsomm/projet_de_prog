@@ -24,6 +24,11 @@ class Network:
         self.start = start
         self.end = end
 
+        self.FATIGUE_MAX = 0
+        for node in self._roads:
+            for (v, d, f) in self._roads[node]:
+                self.FATIGUE_MAX += f
+
     def __str__(self): 
         """
         Prints the network as text.
@@ -67,32 +72,18 @@ class Network:
         return simple_graph
     
     def build_extended_graph(self) -> Graph:
-        # Parcours en largeur
-        VUS = []
-        file = [self.start]
-        new_graph = {self.start: []}
-        graph_antecedent = self.build_simple_graph().graphe_inverse()
-        stockage = {}
-
-        while file != []:
-            sommet = file [0]
-            VUS.append(sommet)
-
-            # rajouter les voisins aux sommets à étudier 
-            for v in self._roads[sommet]:
-                if v not in VUS and v not in file: 
-                    file.append(v)
-
-            # Créer le graphe 
-            # regarde les antécédents 
-            for v in graph_antecedent[sommet]:
-                # distance au nouveau graphe c'est la distance précédente + la somme des fatigues
+        New_roads = {}
+        print("FATIGUE MAX: ", self.FATIGUE_MAX)
+        for node in self._roads:
+            for i in range(self.FATIGUE_MAX):
+                New_roads[(node, i)] = []
+                for (v, d, f) in self._roads[node]:
+                    New_roads[(node, i)].append(((v, i+f), d))
+        for i in New_roads: print(i, New_roads[i])
+        return Graph(New_roads)
                 
-                nouvelle_fatigue = new_graph[v][0][2] + graph[v][sommet][2] # on prend l'élément 0 car tt les sommets ont un unique précédent
-                nouvelle_distance = nouvelle_fatigue + graph[v][sommet][1]    
-                new_graph[v] = [((v + "-" + sommet, nouvelle_distance, nouvelle_fatigue))]
-            
-            del file[0]
+
+
 
             
                 

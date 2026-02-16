@@ -8,7 +8,6 @@ network = Network.from_file(network_file)
 print("test commit push")
 print("test pull")
 
-g = Network.from_file(network_file).build_simple_graph()
+g = Network.from_file(network_file).build_extended_graph()
 v = g.shortest_path("lozere", "saclay")
-print(g._edges)
 print(v)
