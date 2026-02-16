@@ -5,9 +5,9 @@ from graph import Graph
 network_file = "/home/onyxia/work/projet_de_prog/examples/small.txt"
 network = Network.from_file(network_file)
 
-print("test commit push")
-print("test pull")
 
-g = Network.from_file(network_file).build_extended_graph()
-v = g.shortest_path("lozere", "saclay")
-print(v)
+g = Network.from_file(network_file)
+print(g.build_simple_graph()._edges)
+v = g.build_extended_graph() #.shortest_path(g.start, g.end)
+print(v.shortest_path(g.start, g.end))
+

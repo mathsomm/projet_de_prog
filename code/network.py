@@ -78,22 +78,13 @@ class Network:
             for i in range(self.FATIGUE_MAX):
                 New_roads[(node, i)] = []
                 for (v, d, f) in self._roads[node]:
-                    New_roads[(node, i)].append(((v, i+f), d))
-        for i in New_roads: print(i, New_roads[i])
+                    New_roads[(node, i)].append(((v, i+f), d+f))
+
+        # rajout du node début et fin
+        New_roads[self.start] = [((self.start, i), 0) for i in range(self.FATIGUE_MAX)]
+        for i in range(self.FATIGUE_MAX):
+            if (self.end, i) not in New_roads: New_roads[(self.end, i)] = []
+            New_roads[(self.end, i)].append((self.end,0))
+        New_roads[self.end] = []
+
         return Graph(New_roads)
-                
-
-
-
-            
-                
-            
-
-
-        
-network=Network({'v0': [('v1', 21, 2), ('v2', 12, 4)], 
-                        'v1': [('v0', 74, 2), ('v2', 32, 1)]})
-
-graph=network.build_simple_graph()
-print(graph._edges)
-

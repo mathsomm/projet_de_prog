@@ -46,20 +46,18 @@ class Graph:
         return d
 
     def shortest_path(self, depart, fin) -> tuple:
-        print(self._edges)
         Vu = {}
         DISTANCE = {v:float("inf") for v in self._edges}
         PARENT  = {v:None for v in self._edges}
-
         DISTANCE[depart] = 0
-
         node = depart
         while len(Vu) != len(self._edges):
-            
+            if node == None:
+                break
             node_distance = DISTANCE[node]
             for (voisin, distance) in self.neighbours(node):
                 voisin_distance = node_distance + distance
-                if voisin not in Vu and voisin_distance < DISTANCE[voisin]: 
+                if (voisin not in Vu) and (voisin in DISTANCE) and (voisin_distance < DISTANCE[voisin]): 
                     PARENT[voisin] = node
                     DISTANCE[voisin] = voisin_distance
             
@@ -67,7 +65,6 @@ class Graph:
             if node == fin: break
             del DISTANCE[node]
             node = Graph.argmin_dico(DISTANCE)
-        
         chemin = [fin]
         while chemin[-1] != depart:
             chemin.append(PARENT[chemin[-1]])
