@@ -1,7 +1,5 @@
-5 lozere saclay
-lozere ensae 40 5
+4 lozere saclay
+lozere ensae 2 2
 lozere guichet 20 0
-guichet ensae 25 1
-guichet maison 0 5
-maison ensae 0 3
-ensae saclay 45 0
+guichet ensae 5 0
+ensae saclay 5 0

@@ -42,7 +42,7 @@ class Graph:
         d = 0
         for i in range(len(path)-1):
             for a in self._edges[path[i]]:
-                if a[0] == path[i+1]: d+= a[1]
+                if a[0] == path[i+1]: d += a[1]
         return d
 
     def shortest_path(self, depart, fin) -> tuple:
@@ -68,7 +68,7 @@ class Graph:
         chemin = [fin]
         while chemin[-1] != depart:
             chemin.append(PARENT[chemin[-1]])
+            
         chemin.reverse()
-        print(chemin)
         return (self.distance(chemin), chemin)
-
+    

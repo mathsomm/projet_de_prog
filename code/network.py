@@ -24,7 +24,7 @@ class Network:
         self.start = start
         self.end = end
 
-        self.FATIGUE_MAX = 0
+        self.FATIGUE_MAX = 1
         for node in self._roads:
             for (v, d, f) in self._roads[node]:
                 self.FATIGUE_MAX += f
@@ -63,7 +63,6 @@ class Network:
         Builds an object of type Graph from the network, by ignoring the fatigue coefficient. 
         """
         edges={}
-        edge_fatigue=self._roads
         for e in self._roads:
             edges[e]=[]
             for c in self._roads[e]:
@@ -71,20 +70,29 @@ class Network:
         simple_graph=Graph(edges)
         return simple_graph
     
+    def print_result(self):
+        R = self.build_extended_graph().shortest_path(self.start, self.end)
+        print("--RESULTAT--")
+        print("TEMPS MINIMAL:", R[0])
+        print("TRAJET", R[1])
+
+        print("\n \n--INFO--")
+        print("MAX fatigue: ", self.FATIGUE_MAX)
+        print("NB Node: ", len(self._roads))
+        print("Roads", list(self._roads.keys()))
+
     def build_extended_graph(self) -> Graph:
         New_roads = {}
-        print("FATIGUE MAX: ", self.FATIGUE_MAX)
         for node in self._roads:
-            for i in range(self.FATIGUE_MAX):
+            for i in range(1, self.FATIGUE_MAX+1):
                 New_roads[(node, i)] = []
                 for (v, d, f) in self._roads[node]:
-                    New_roads[(node, i)].append(((v, i+f), d+f))
+                    New_roads[(node, i)].append(((v, i+f), d*i))
 
         # rajout du node début et fin
-        New_roads[self.start] = [((self.start, i), 0) for i in range(self.FATIGUE_MAX)]
-        for i in range(self.FATIGUE_MAX):
+        New_roads[self.start] = [((self.start, 1), 0)]
+        for i in range(1, self.FATIGUE_MAX+1):
             if (self.end, i) not in New_roads: New_roads[(self.end, i)] = []
             New_roads[(self.end, i)].append((self.end,0))
         New_roads[self.end] = []
-
         return Graph(New_roads)
