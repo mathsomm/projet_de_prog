@@ -46,29 +46,42 @@ class Graph:
         return d
 
     def shortest_path(self, depart, fin) -> tuple:
-        Vu = {}
-        DISTANCE = {v:float("inf") for v in self._edges}
-        PARENT  = {v:None for v in self._edges}
-        DISTANCE[depart] = 0
-        node = depart
-        while len(Vu) != len(self._edges):
-            if node == None:
-                break
-            node_distance = DISTANCE[node]
-            for (voisin, distance) in self.neighbours(node):
-                voisin_distance = node_distance + distance
-                if (voisin not in Vu) and (voisin in DISTANCE) and (voisin_distance < DISTANCE[voisin]): 
-                    PARENT[voisin] = node
-                    DISTANCE[voisin] = voisin_distance
+    
+    DISTANCE = {depart: 0} # DISTANCE ne contient que les nœuds "découverts"
+    PARENT = {depart: None}
+    Vu = {} #Un sommet est dans Vu quand on sait avec certitude avoir trouvé son chemin et sa distance optimale
+    while DISTANCE:
+        node = Graph.argmin_dico(DISTANCE)# On cherche le nœud le plus proche parmi ceux qu'on connaît
+        if node is None:
+            break
+        node_distance = DISTANCE[node]
+        # Si on a atteint la destination, on peut s'arrêter
+        if node == fin:
+            Vu[node] = node_distance
+            break
+        #exploration des voisins   
+        for (voisin, poids_arete) in self.neighbours(node):
+            if voisin in Vu:
+                continue
+            nouvelle_dist = node_distance + poids_arete
             
-            Vu[node] = DISTANCE[node]
-            if node == fin: break
-            del DISTANCE[node]
-            node = Graph.argmin_dico(DISTANCE)
-        chemin = [fin]
-        while chemin[-1] != depart:
-            chemin.append(PARENT[chemin[-1]])
-            
-        chemin.reverse()
-        return (self.distance(chemin), chemin)
+            # Si le voisin est inconnu OU si on a trouvé un chemin plus court
+            if voisin not in DISTANCE or nouvelle_dist < DISTANCE[voisin]:
+                DISTANCE[voisin] = nouvelle_dist
+                PARENT[voisin] = node
+        
+        # On marque le nœud comme visité et on le retire des candidats
+        Vu[node] = DISTANCE.pop(node)
+    # Reconstruction du chemin
+    if fin not in Vu:
+        return (float("inf"), [])
+    chemin = []
+    actuel = fin
+    while actuel is not None:
+        chemin.append(actuel)
+        actuel = PARENT[actuel]
+    chemin.reverse()
+    return (Vu[fin], chemin)
+
+
     
