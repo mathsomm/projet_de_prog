@@ -11,8 +11,8 @@ class Graph:
     -----------
     edges: dict
         A dictionary that contains the list of neighbors of each node with its weight.
-        Ex: edges = {v0: [(v1, 21), (v2, 12)], 
-                     v1: [(v0, 74), (v2, 32)], 
+        Ex: edges = {'v0': [('v1', 21), ('v2', 12)], 
+                     'v1': [('v0', 74), ('v2', 32)], 
                      ...}
 
     Methods: 
@@ -84,3 +84,6 @@ class Graph:
         return (Vu[fin], chemin)
 
     
+edges_test = {'v0': [('v1', 21), ('v2', 12)], 'v1': [('v0', 10), ('v2', 32),('v3',1)],'v2':[('v3',70)]}
+graph_test = Graph(edges_test)
+print(graph_test.shortest_path('v0','v3'))
