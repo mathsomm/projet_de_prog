@@ -96,3 +96,33 @@ class Network:
             New_roads[(self.end, i)].append((self.end,0))
         New_roads[self.end] = []
         return Graph(New_roads)
+
+
+#Explication du fonctionnement de la méthode build_implicit_graph: elle fabrique un objet GraphImplicit et lui donne la fonction  "fonction_voisins" qui va avec
+    
+    def build_implicit_graph(self) -> GraphImplicit:
+        def fonction_voisins(state):  #on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
+            if state == self.start:
+                # On commence au point de départ avec une fatigue de 1, coût 0. En effet, il faut faire le pond entre le départ dans le monde simple et le départ dans le monde étnedu
+
+            # Cas d'un état (sommet, fatigue)
+            if isinstance(state, tuple):
+                u, fatigue_actuelle = state
+                voisins = []
+                
+                for (v, longueur, fatigue_route) in self._roads.get(u, []):
+                    nouvelle_fatigue = fatigue_actuelle + fatigue_route
+                    temps_parcours = longueur * fatigue_actuelle
+                    voisins.append(((v, nouvelle_fatigue), temps_parcours))
+                
+                # Si on est au sommet d'arrivée, on ajoute une transition vers le noeud final
+                if u == self.end:
+                    voisins.append((self.end, 0))
+                    
+                return voisins
+
+            # cas du noeud final: il n'a pas de voisins sortants
+            return []
+
+        # On retourne un objet GraphImplicit qui utilisera cette fonction
+        return GraphImplicit(fonction_voisins)
