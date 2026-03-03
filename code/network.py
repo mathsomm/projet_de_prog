@@ -14,9 +14,8 @@ class Network:
         roads: dict
             A dictionary of the roads as an adjacency list, that is 
             roads[u] = list of (v, length, fatigue)
-            Ex: roads = {v0: [(v1, 21, 2), (v2, 12, 4)], 
-                        v1: [(v0, 74, 2), (v2, 32, 1)], 
-                        ...}
+            Ex: roads = {'v0': [('v1', 21, 2), ('v2', 12, 4)], 
+                        'v1': [('v0', 74, 2), ('v2', 32, 1)]}
         start, end: 
             Start and end nodes added as attributes
         """
@@ -103,6 +102,7 @@ class Network:
     def build_implicit_graph(self) -> GraphImplicit:
         def fonction_voisins(state):  #on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
             if state == self.start:
+                return [((self.start, 1), 0)]
                 # On commence au point de départ avec une fatigue de 1, coût 0. En effet, il faut faire le pond entre le départ dans le monde simple et le départ dans le monde étnedu
 
             # Cas d'un état (sommet, fatigue)
@@ -126,3 +126,9 @@ class Network:
 
         # On retourne un objet GraphImplicit qui utilisera cette fonction
         return GraphImplicit(fonction_voisins)
+
+#network_test = Network({'v0': [('v1', 21, 2), ('v2', 12, 4)], 
+                        'v1': [('v0', 74, 2), ('v2', 32, 1)],'v2':[('v3',15,2)]},'v0','v3')
+#print(network_test._roads)
+#print(network_test.build_implicit_graph().neighbours(('v0',2)))
+#print(network_test.build_implicit_graph().shortest_path('v0','v3'))
