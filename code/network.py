@@ -70,6 +70,7 @@ class Network:
         return simple_graph
     
     def print_result(self):
+        # afficher les resultats associés au plus court chemin
         R = self.build_extended_graph().shortest_path(self.start, self.end)
         print("--RESULTAT--")
         print("TEMPS MINIMAL:", R[0])
@@ -97,8 +98,7 @@ class Network:
         return Graph(New_roads)
 
 
-#Explication du fonctionnement de la méthode build_implicit_graph: elle fabrique un objet GraphImplicit et lui donne la fonction  "fonction_voisins" qui va avec
-    
+    # fabrique un objet GraphImplicit et lui donne la fonction "fonction_voisins" qui va avec
     def build_implicit_graph(self) -> GraphImplicit:
         def fonction_voisins(state):  #on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
             if state == self.start:
@@ -126,9 +126,3 @@ class Network:
 
         # On retourne un objet GraphImplicit qui utilisera cette fonction
         return GraphImplicit(fonction_voisins)
-
-#network_test = Network({'v0': [('v1', 21, 2), ('v2', 12, 4)], 
-                        'v1': [('v0', 74, 2), ('v2', 32, 1)],'v2':[('v3',15,2)]},'v0','v3')
-#print(network_test._roads)
-#print(network_test.build_implicit_graph().neighbours(('v0',2)))
-#print(network_test.build_implicit_graph().shortest_path('v0','v3'))

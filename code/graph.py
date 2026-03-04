@@ -38,7 +38,8 @@ class Graph:
                 m = dico[i]
         return mini
 
-    def distance(self, path):
+    def distance(self, path): 
+        # trouver la distance parcourue pour un chemin donné 
         d = 0
         for i in range(len(path)-1):
             for a in self._edges[path[i]]:
@@ -83,10 +84,6 @@ class Graph:
         chemin.reverse()
         return (Vu[fin], chemin)
  
-#edges_test = {'v0': [('v1', 21), ('v2', 12)], 'v1': [('v0', 10), ('v2', 0),('v3',4)],'v2':[('v3',70)]}
-#graph_test = Graph(edges_test)
-#print(graph_test.shortest_path('v0','v3'))
-
 class GraphImplicit(Graph):
         def __init__(self, fonction_voisins):
             self.fonction_voisins = fonction_voisins
