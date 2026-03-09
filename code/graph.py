@@ -21,9 +21,11 @@ class Graph:
         Returns the list of all neighbors of a node
     """
 
-    def __init__(self, edges):
+    def __init__(self, edges, heuristique = None):
         self._edges = edges
+
         self.heuristique = lambda a, dico: dico[a]
+        if heuristique != None: self.heuristique = heuristique
 
     def neighbours(self, node):
         if node not in self._edges:
