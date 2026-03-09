@@ -146,11 +146,11 @@ class Network:
                         nouvelle_fatigue = fatigue_actuelle + fatigue_route
                         temps_parcours = longueur * fatigue_actuelle
                         #si je ne trouve pas un (v,f,d) meilleur, alors je ne peux pas écarter ce candidat et je le traite: la fonction voisin doit le renvoyer
-                        if not any( (nouvelle_fatigue>=x[0] and temps_parcours >=x[1])  for x in self.mémoire_pareto[v] )                    
+                        if not any( (nouvelle_fatigue>=x[0] and temps_parcours >=x[1])  for x in self.mémoire_pareto[v] ):                    
                             voisins.append(((v, nouvelle_fatigue), temps_parcours))
                             self.mémoire_pareto[v].append((nouvelle_fatigue,temps_parcours))
                 if u == self.end:
                     voisins.append((self.end, 0))
                 return voisins
             return []
-        return GraphImplicit(fonction_voisins_pareto)
+        return GraphImplicit(fonction_voisins)
