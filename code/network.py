@@ -27,6 +27,7 @@ class Network:
         for node in self._roads:
             for (v, d, f) in self._roads[node]:
                 self.FATIGUE_MAX += f
+        self.mémoire_pareto={} #{v:[(fatigue1,distance1),(fatigue2,distance2),...]}
 
     def __str__(self): 
         """
@@ -125,4 +126,31 @@ class Network:
             return []
 
         # On retourne un objet GraphImplicit qui utilisera cette fonction
-        return GraphImplicit(fonction_voisins)
+
+        def fonction_voisins_pareto(state):  #même fonction mais ajoute une condition pour implémenter la méthode de prunning
+            if state == self.start:
+                return [((self.start, 1), 0)]
+            if isinstance(state, tuple):
+                u, fatigue_actuelle = state
+
+                voisins = []
+                for (v, longueur, fatigue_route) in self._roads.get(u, []):
+                    #on teste si on a pas déjà trouvé un v mieux 
+                    if v not in self.mémoire_paretol:  #c'est le cas ou on découvre v pour la première fois
+                        nouvelle_fatigue = fatigue_actuelle + fatigue_route
+                        temps_parcours = longueur * fatigue_actuelle
+                        voisins.append(((v, nouvelle_fatigue), temps_parcours))
+                        self.mémoire_pareto[v]=[(nouvelle_fatigue,temps_parcours)]
+                    #cas ou on déjà rencontré v
+                    if v in self.mémoire_pareto[v]:
+                        nouvelle_fatigue = fatigue_actuelle + fatigue_route
+                        temps_parcours = longueur * fatigue_actuelle
+                        #si je ne trouve pas un (v,f,d) meilleur, alors je ne peux pas écarter ce candidat et je le traite: la fonction voisin doit le renvoyer
+                        if not any( (nouvelle_fatigue>=x[0] and temps_parcours >=x[1])  for x in self.mémoire_pareto[v] )                    
+                            voisins.append(((v, nouvelle_fatigue), temps_parcours))
+                            self.mémoire_pareto[v].append((nouvelle_fatigue,temps_parcours))
+                if u == self.end:
+                    voisins.append((self.end, 0))
+                return voisins
+            return []
+        return GraphImplicit(fonction_voisins_pareto)
