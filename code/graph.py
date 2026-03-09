@@ -21,22 +21,28 @@ class Graph:
         Returns the list of all neighbors of a node
     """
 
-    def __init__(self, edges):
+    def __init__(self, edges, heuristique = None):
         self._edges = edges
+
+        self.heuristique = lambda a, dico: dico[a]
+        if heuristique != None: self.heuristique = heuristique
 
     def neighbours(self, node):
         if node not in self._edges:
             return []
         return self._edges[node]
 
-    def argmin_dico(dico):
+    def argmin_dico(self, dico):
         m = float("inf")
         mini = None
         for i in dico:
-            if dico[i] < m:
+            if self.heuristique(i, dico) < m:
                 mini = i
-                m = dico[i]
+                m = self.heuristique(i, dico)
         return mini
+    
+
+
 
     def distance(self, path): 
         # trouver la distance parcourue pour un chemin donné 
@@ -46,13 +52,13 @@ class Graph:
                 if a[0] == path[i+1]: d += a[1]
         return d
 
-    def shortest_path(self, depart, fin) -> tuple:
+    def shortest_path(self, depart, fin, return_DISTANCE = False) -> tuple:
     
         DISTANCE = {depart: 0} # DISTANCE ne contient que les nœuds "découverts"
         PARENT = {depart: None}
         Vu = {} #Un sommet est dans Vu quand on sait avec certitude avoir trouvé son chemin et sa distance optimale
         while DISTANCE:
-            node = Graph.argmin_dico(DISTANCE)# On cherche le nœud le plus proche parmi ceux qu'on connaît
+            node = self.argmin_dico(DISTANCE)# On cherche le nœud le plus proche parmi ceux qu'on connaît
             if node is None:
                 break
             node_distance = DISTANCE[node]
@@ -73,6 +79,10 @@ class Graph:
             
             # On marque le nœud comme visité et on le retire des candidats
             Vu[node] = DISTANCE.pop(node)
+
+
+        if return_DISTANCE: return DISTANCE
+        
         # Reconstruction du chemin
         if fin not in Vu:
             return (float("inf"), [])
