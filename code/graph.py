@@ -27,6 +27,9 @@ class Graph:
         self.heuristique = lambda a, dico: dico[a]
         if heuristique != None: self.heuristique = heuristique
 
+    def heuristique(self, a, dico):
+        return dico[a]
+        
     def neighbours(self, node):
         if node not in self._edges:
             return []
