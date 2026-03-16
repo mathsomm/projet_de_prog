@@ -21,15 +21,11 @@ class Graph:
         Returns the list of all neighbors of a node
     """
 
-    def __init__(self, edges, heuristique = None):
+    def __init__(self, edges):
         self._edges = edges
 
-        self.heuristique = lambda a, dico: dico[a]
-        if heuristique != None: self.heuristique = heuristique
-
-    def heuristique(self, a, dico):
-        return dico[a]
-        
+    def heuristique(self, a, dico): return dico[a]
+    
     def neighbours(self, node):
         if node not in self._edges:
             return []
@@ -98,8 +94,21 @@ class Graph:
         return (Vu[fin], chemin)
  
 class GraphImplicit(Graph):
-        def __init__(self, fonction_voisins):
+        def __init__(self, fonction_voisins, heuristique_info={}):
             self.fonction_voisins = fonction_voisins
+            self.heuristique_info = heuristique_info
         
         def neighbours(self, node):
             return self.fonction_voisins(node) 
+
+        def heuristique(self, a, dico):
+            
+            if "dijkstra_no_fatigue" in self.heuristique_info:
+                dij = self.heuristique_info["dijkstra_no_fatigue"]
+                test = [a[1:].split(",")[0], a]
+                for point in test:
+                    if point in dij:
+                        return dij[point]+a
+                print("no found: ", test, "\n", dij)    
+            return dico[a]
+
