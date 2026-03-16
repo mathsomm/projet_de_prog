@@ -153,5 +153,7 @@ class Network:
                     voisins.append((self.end, 0))
                 return voisins
             return []
-        if pereto:return GraphImplicit(fonction_voisins_pareto)
-        else: GraphImplicit(fonction_voisins)
+        
+        heuristique = {"dijkstra_no_fatigue": self.build_simple_graph().shortest_path(self.start, self.end, return_DISTANCE=True)}
+        if pareto:return GraphImplicit(fonction_voisins_pareto, heuristique_info=heuristique)
+        else: return GraphImplicit(fonction_voisins, heuristique_info=heuristique)

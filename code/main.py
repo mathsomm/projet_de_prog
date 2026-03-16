@@ -2,11 +2,12 @@ from network import Network
 from graph import Graph
 from time import time
 # Load the network
-network_file = "/home/onyxia/work/projet_de_prog/examples/medium-largefatigue.txt"
+network_file = "/home/onyxia/work/projet_de_prog/examples/small.txt"
 network = Network.from_file(network_file)
 
 
 g = Network.from_file(network_file)
+g.build_implicit_graph(False).shortest_path(g.start, g.end)
 
 
 def test_duree(g):
@@ -21,11 +22,11 @@ def test_duree(g):
     print("test extended: \n", "temps: ", time()-t, "\n", "resultat: ", test)
 
     t = time()
-    test = g.build_build_implicit_graph(pareto=False).shortest_path(g.start, g.end)
+    test = g.build_implicit_graph(pareto=False).shortest_path(g.start, g.end)
     print("test implicite: \n", "temps: ", time()-t, "\n", "resultat: ", test)
 
     t = time()
-    test = g.build_build_implicit_graph(pareto=True).shortest_path(g.start, g.end)
+    test = g.build_implicit_graph(pareto=True).shortest_path(g.start, g.end)
     print("test implicite ++ : \n", "temps: ", time()-t, "\n", "resultat: ", test)
 
 test_duree(g)

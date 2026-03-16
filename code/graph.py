@@ -105,10 +105,10 @@ class GraphImplicit(Graph):
             
             if "dijkstra_no_fatigue" in self.heuristique_info:
                 dij = self.heuristique_info["dijkstra_no_fatigue"]
-                test = [a[1:].split(",")[0], a]
-                for point in test:
-                    if point in dij:
-                        return dij[point]+a
-                print("no found: ", test, "\n", dij)    
+                print(point)
+                point = a[1:].split(",")[0]
+                if point in dij:
+                    fatigue = int(a.split(",")[1][:-1])
+                    return dij[point]*fatigue + dico[a]
+                print("no found: ", point, "\n", dij)    
             return dico[a]
-
