@@ -7,7 +7,6 @@ network = Network.from_file(network_file)
 
 
 g = Network.from_file(network_file)
-g.print_result()
 
 
 def test_duree(g):
@@ -18,8 +17,8 @@ def test_duree(g):
     print("test simple: \n", "temps: ", time()-t, "\n", "resultat: ", test)
 
     t = time()
-    test = g.build_extanded_graph().shortest_path(g.start, g.end)
-    print("test extanded: \n", "temps: ", time()-t, "\n", "resultat: ", test)
+    test = g.build_extended_graph().shortest_path(g.start, g.end)
+    print("test extended: \n", "temps: ", time()-t, "\n", "resultat: ", test)
 
     t = time()
     test = g.build_build_implicit_graph(pareto=False).shortest_path(g.start, g.end)
