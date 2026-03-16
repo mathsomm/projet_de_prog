@@ -142,7 +142,7 @@ class Network:
                         voisins.append(((v, nouvelle_fatigue), temps_parcours))
                         self.mémoire_pareto[v] = [(nouvelle_fatigue,temps_parcours)]
                     # cas ou on déjà rencontré v
-                    if v in self.mémoire_pareto[v]:
+                    else:
                         nouvelle_fatigue = fatigue_actuelle + fatigue_route
                         temps_parcours = longueur * fatigue_actuelle
                         #si je ne trouve pas un (v,f,d) meilleur, alors je ne peux pas écarter ce candidat et je le traite: la fonction voisin doit le renvoyer
