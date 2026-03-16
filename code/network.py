@@ -100,7 +100,7 @@ class Network:
 
 
     # fabrique un objet GraphImplicit et lui donne la fonction "fonction_voisins" qui va avec
-    def build_implicit_graph(self) -> GraphImplicit:
+    def build_implicit_graph(self, pareto) -> GraphImplicit:
         def fonction_voisins(state):  # on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
             if state == self.start:
                 return [((self.start, 1), 0)]
@@ -153,4 +153,5 @@ class Network:
                     voisins.append((self.end, 0))
                 return voisins
             return []
-        return GraphImplicit(fonction_voisins_pareto)
+        if pereto:return GraphImplicit(fonction_voisins_pareto)
+        else: GraphImplicit(fonction_voisins)
