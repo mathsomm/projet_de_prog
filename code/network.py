@@ -72,7 +72,7 @@ class Network:
     
     def print_result(self):
         # afficher les resultats associés au plus court chemin
-        R = self.build_extended_graph().shortest_path(self.start, self.end)
+        R = self.build_implicit_graph().shortest_path(self.start, self.end)
         print("--RESULTAT--")
         print("TEMPS MINIMAL:", R[0])
         print("TRAJET", R[1])
@@ -100,8 +100,8 @@ class Network:
 
 
     # fabrique un objet GraphImplicit et lui donne la fonction "fonction_voisins" qui va avec
-    def build_implicit_graph(self) -> GraphImplicit:
-        def fonction_voisins(state):  #on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
+    def build_implicit_graph(self, pareto) -> GraphImplicit:
+        def fonction_voisins(state):  # on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
             if state == self.start:
                 return [((self.start, 1), 0)]
                 # On commence au point de départ avec une fatigue de 1, coût 0. En effet, il faut faire le pond entre le départ dans le monde simple et le départ dans le monde étnedu
@@ -135,14 +135,14 @@ class Network:
 
                 voisins = []
                 for (v, longueur, fatigue_route) in self._roads.get(u, []):
-                    #on teste si on a pas déjà trouvé un v mieux 
-                    if v not in self.mémoire_paretol:  #c'est le cas ou on découvre v pour la première fois
+                    # on teste si on a pas déjà trouvé un v mieux 
+                    if v not in self.mémoire_pareto:  #c'est le cas ou on découvre v pour la première fois
                         nouvelle_fatigue = fatigue_actuelle + fatigue_route
                         temps_parcours = longueur * fatigue_actuelle
                         voisins.append(((v, nouvelle_fatigue), temps_parcours))
-                        self.mémoire_pareto[v]=[(nouvelle_fatigue,temps_parcours)]
-                    #cas ou on déjà rencontré v
-                    if v in self.mémoire_pareto[v]:
+                        self.mémoire_pareto[v] = [(nouvelle_fatigue,temps_parcours)]
+                    # cas ou on déjà rencontré v
+                    else:
                         nouvelle_fatigue = fatigue_actuelle + fatigue_route
                         temps_parcours = longueur * fatigue_actuelle
                         #si je ne trouve pas un (v,f,d) meilleur, alors je ne peux pas écarter ce candidat et je le traite: la fonction voisin doit le renvoyer
@@ -153,4 +153,5 @@ class Network:
                     voisins.append((self.end, 0))
                 return voisins
             return []
-        return GraphImplicit(fonction_voisins)
+        if pereto:return GraphImplicit(fonction_voisins_pareto)
+        else: GraphImplicit(fonction_voisins)
