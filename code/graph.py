@@ -44,9 +44,9 @@ class Graph:
         roads_inv={}
         for v in self._edges:
             for (e,d) in self._edges[v]:
-                if e not in roads_inv: roads_inv[e]=[v,d]
+                if e not in roads_inv: roads_inv[e]=[(v,d)]
                 else: roads_inv[e].append((v,d))
-        return roads_inv
+        return Graph(roads_inv)
 
 
     def distance(self, path): 
@@ -106,13 +106,15 @@ class GraphImplicit(Graph):
             return self.fonction_voisins(node) 
 
         def heuristique(self, a, dico):
+           
             if type(a)==tuple and self.heuristique_info != {}:
                 distance_fin = self.heuristique_info[a[0]]
-                
                 fatigue = a[1]
                 #print("distance': ", a, "  ",  distance_fin*fatigue + dico[a])
+                print(dico[a], " -> ", distance_fin*fatigue + dico[a])
+                if dico[a] == 0: return 0
                 return distance_fin*fatigue + dico[a]
-                   
+            print("on y passe")     
             return dico[a]
 
 edges={'v0': [('v1', 21), ('v2', 12)], 'v1': [('v0', 74), ('v2', 32)]}

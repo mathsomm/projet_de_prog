@@ -155,7 +155,8 @@ class Network:
             return []
         
         if heuristique:
-            heuristique = {p: self.build_simple_graph().shortest_path(p, self.end)[0] for p in self._roads}
+            heuristique = self.build_simple_graph().graphe_inverse().shortest_path(self.end, self.start, return_DISTANCE=True)
+            print(heuristique)
             #print("heuristique: ", heuristique)
             if pareto:return GraphImplicit(fonction_voisins_pareto, heuristique_info=heuristique)
             else: return GraphImplicit(fonction_voisins, heuristique_info=heuristique)
