@@ -7,8 +7,8 @@ network = Network.from_file(network_file)
 
 
 g = Network.from_file(network_file)
-g.build_implicit_graph(False).shortest_path(g.start, g.end)
 
+print(g.build_simple_graph().shortest_path(g.start, g.end, True), "\n \n")
 
 def test_duree(g):
     g = Network.from_file(network_file)

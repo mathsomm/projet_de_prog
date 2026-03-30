@@ -52,7 +52,6 @@ class Graph:
         return d
 
     def shortest_path(self, depart, fin, return_DISTANCE = False) -> tuple:
-    
         DISTANCE = {depart: 0} # DISTANCE ne contient que les nœuds "découverts"
         PARENT = {depart: None}
         Vu = {} #Un sommet est dans Vu quand on sait avec certitude avoir trouvé son chemin et sa distance optimale
@@ -79,8 +78,7 @@ class Graph:
             # On marque le nœud comme visité et on le retire des candidats
             Vu[node] = DISTANCE.pop(node)
 
-
-        if return_DISTANCE: return DISTANCE
+        if return_DISTANCE: return Vu
         
         # Reconstruction du chemin
         if fin not in Vu:
@@ -102,13 +100,11 @@ class GraphImplicit(Graph):
             return self.fonction_voisins(node) 
 
         def heuristique(self, a, dico):
-            
-            if "dijkstra_no_fatigue" in self.heuristique_info:
-                dij = self.heuristique_info["dijkstra_no_fatigue"]
-                print(point)
-                point = a[1:].split(",")[0]
-                if point in dij:
-                    fatigue = int(a.split(",")[1][:-1])
-                    return dij[point]*fatigue + dico[a]
-                print("no found: ", point, "\n", dij)    
+            if type(a)==tuple and self.heuristique_info != {}:
+                distance_fin = self.heuristique_info[a[0]]
+                
+                fatigue = a[1]
+                #print("distance': ", a, "  ",  distance_fin*fatigue + dico[a])
+                return distance_fin*fatigue + dico[a]
+                   
             return dico[a]

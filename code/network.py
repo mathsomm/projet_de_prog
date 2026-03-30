@@ -100,7 +100,7 @@ class Network:
 
 
     # fabrique un objet GraphImplicit et lui donne la fonction "fonction_voisins" qui va avec
-    def build_implicit_graph(self, pareto) -> GraphImplicit:
+    def build_implicit_graph(self, pareto, heuristique=True) -> GraphImplicit:
         def fonction_voisins(state):  # on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
             if state == self.start:
                 return [((self.start, 1), 0)]
@@ -154,6 +154,11 @@ class Network:
                 return voisins
             return []
         
-        heuristique = {"dijkstra_no_fatigue": self.build_simple_graph().shortest_path(self.start, self.end, return_DISTANCE=True)}
-        if pareto:return GraphImplicit(fonction_voisins_pareto, heuristique_info=heuristique)
-        else: return GraphImplicit(fonction_voisins, heuristique_info=heuristique)
+        if heuristique:
+            heuristique = {p: self.build_simple_graph().shortest_path(p, self.end)[0] for p in self._roads}
+            #print("heuristique: ", heuristique)
+            if pareto:return GraphImplicit(fonction_voisins_pareto, heuristique_info=heuristique)
+            else: return GraphImplicit(fonction_voisins, heuristique_info=heuristique)
+        else: 
+            if pareto:return GraphImplicit(fonction_voisins_pareto)
+            else: return GraphImplicit(fonction_voisins)
