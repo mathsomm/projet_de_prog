@@ -40,6 +40,14 @@ class Graph:
                 m = self.heuristique(i, dico)
         return mini
 
+    def graphe_inverse(self):
+        roads_inv={}
+        for v in self._edges:
+            for (e,d) in self._edges[v]:
+                if e not in roads_inv: roads_inv[e]=[v,d]
+                else: roads_inv[e].append((v,d))
+        return roads_inv
+
 
     def distance(self, path): 
         # trouver la distance parcourue pour un chemin donné 
