@@ -39,8 +39,6 @@ class Graph:
                 mini = i
                 m = self.heuristique(i, dico)
         return mini
-    
-
 
 
     def distance(self, path): 
@@ -112,3 +110,6 @@ class GraphImplicit(Graph):
                     return dij[point]*fatigue + dico[a]
                 print("no found: ", point, "\n", dij)    
             return dico[a]
+
+edges={'v0': [('v1', 21), ('v2', 12)], 'v1': [('v0', 74), ('v2', 32)]}
+print(Graph(edges).graphe_inverse())
