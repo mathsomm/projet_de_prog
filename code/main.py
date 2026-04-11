@@ -2,7 +2,7 @@ from network import Network
 from graph import Graph
 from time import time
 # Load the network
-network_file = "/home/onyxia/work/projet_de_prog/examples/large-nofatigue.txt"
+network_file = "examples/large-nofatigue.txt"
 network = Network.from_file(network_file)
 
 
@@ -25,10 +25,10 @@ def test_duree(g):
     """
 
     t = time()
-    #test = g.build_implicit_graph(pareto=True, heuristique=False).shortest_path(g.start, g.end)
-    #print("test implicite ++ : \n", "temps: ", time()-t, "\n", "resultat: ", test)
+    test = g.build_implicit_graph(pareto=False, heuristique=False).shortest_path(g.start, g.end)[0]
+    print("test implicite ++ : \n", "temps: ", time()-t, "\n", "resultat: ", test)
 
     t = time()
-    test = g.build_implicit_graph(pareto=True, heuristique=True).shortest_path(g.start, g.end)
+    test = g.build_implicit_graph(pareto=True, heuristique=True).shortest_path(g.start, g.end)[0]
     print("test implicite ++ heuristique: \n", "temps: ", time()-t, "\n", "resultat: ", test)
 test_duree(g)

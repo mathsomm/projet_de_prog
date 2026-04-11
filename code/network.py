@@ -155,11 +155,23 @@ class Network:
             return []
         
         if heuristique:
-            heuristique = self.build_simple_graph().graphe_inverse().shortest_path(self.end, self.start, return_DISTANCE=True)
-            print(heuristique)
-            #print("heuristique: ", heuristique)
-            if pareto:return GraphImplicit(fonction_voisins_pareto, heuristique_info=heuristique)
-            else: return GraphImplicit(fonction_voisins, heuristique_info=heuristique)
-        else: 
-            if pareto:return GraphImplicit(fonction_voisins_pareto)
-            else: return GraphImplicit(fonction_voisins)
+            inverse_graph = self.build_simple_graph().graphe_inverse()
+            if inverse_graph is None:
+                print("ERROR: graphe_inverse() returned None")
+                heuristique_info = {}
+            else:
+                heuristique_info = inverse_graph.shortest_path(self.end, self.start, return_DISTANCE=True)
+                print("----fin calcul heuristique")
+                if heuristique_info is None:
+                    print("ERROR: No path found from end to start")
+                    heuristique_info =  {}
+    
+            if heuristique and pareto:
+                return GraphImplicit(fonction_voisins_pareto, heuristique_info=heuristique_info)
+            else:
+                return GraphImplicit(fonction_voisins, heuristique_info=heuristique_info)
+        else:
+            if pareto:
+                return GraphImplicit(fonction_voisins_pareto)
+            else:
+                return GraphImplicit(fonction_voisins)
