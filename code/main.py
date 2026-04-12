@@ -5,7 +5,6 @@ from extension import Mission
 # Load the network
 network_file = "examples/small.txt"
 network = Network.from_file(network_file)
-print(network.build_extended_graph().shortest_path("lozere", "saclay"))
 
 def comparaison_duree():
     g = Network.from_file(network_file)
@@ -32,6 +31,7 @@ def comparaison_duree():
 
 def test_multitude_missions():
     missions = [("lozere", "guichet"), ("ensae", "saclay")]
-    Mission(missions, network_file) 
-
+    m = Mission(missions, network_file, "lozere") 
+    print("mission à la suite: ", m.temps_affile(missions))
+    print("mission avec le choix: ", m.temps_choix())
 test_multitude_missions()
