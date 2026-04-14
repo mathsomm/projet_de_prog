@@ -1,3 +1,5 @@
+import heapq
+
 """
 This is the graph module. It contains the classes Graph and GraphImplicit
 """
@@ -99,21 +101,82 @@ class Graph:
             actuel = PARENT[actuel]
         chemin.reverse()
         return (Vu[fin], chemin)
- 
+
+    def shortest_path2(self, depart, fin, pareto=False, heuristique=False):
+        # Format : (f_score, temps_total_cumulé, fatigue_actuelle, noeud_actuel, noeud_parent)
+        atraiter = []
+        heapq.heappush(atraiter, (0, 0, 1, depart, None))
+        archives_pareto = {}
+        PARENT = {}
+        while atraiter: # Tant qu'il y a des noeuds à explorer
+            # on incorpore ici en plus la méthode de prunning
+            f_score, temps_total, fatigue, u, parent = heapq.heappop(atraiter)
+            if pareto: 
+                if u in archives_pareto: 
+                    estdominé=False
+                    for (f_archive, t_archive) in archives_pareto[u]:
+                        if f_archive <= fatigue and t_archive <= temps_total:
+                            estdominé=True
+                            break
+                    if estdominé: 
+                        continue 
+                    else: 
+                        archives_pareto[u].append((fatigue,temps_total))
+                        PARENT[(u, fatigue)] = parent
+                else:
+                    archives_pareto[u]=[(fatigue,temps_total)]
+                    PARENT[(u, fatigue)] = parent
+            else: 
+                if (u, fatigue) in PARENT:
+                    continue
+                PARENT[(u, fatigue)] = parent
+            
+            # condition d'arret
+            if u == fin:
+                chemin = []
+                var = (u, fatigue) 
+                while var is not None:
+                    chemin.append(var[0]) 
+                    var = PARENT[var]
+                chemin.reverse()
+                return (temps_total, chemin)
+            # Ajout des voisins dans atraiter
+            for state_voisin, poids_arete in self.neighbours((u, fatigue)):
+                v, nouvelle_fatigue = state_voisin
+                nouveau_temps_total = temps_total + poids_arete 
+                # Calcul du A* : f(n) = g(n) + h(n)
+                # (Il faudra adapter ta fonction heuristique comme expliqué plus haut) 
+                if heuristique:
+                    h_score = self.heuristique(v, nouvelle_fatigue)
+                    nouveau_f_score = nouveau_temps_total + h_score
+                else:
+                    nouveau_f_score = nouveau_temps_total
+                # On ajoute à la file de priorité
+                heapq.heappush(atraiter, (nouveau_f_score, nouveau_temps_total, nouvelle_fatigue, v, (u, fatigue)))
+
+        # Si on sort du while sans avoir trouvé 'fin', c'est qu'il n'y a pas de chemin
+        return (float("inf"), [])
+
+
+
+
 class GraphImplicit(Graph):
-        def __init__(self, fonction_voisins, heuristique_info={}):
-            self.fonction_voisins = fonction_voisins
-            self.heuristique_info = heuristique_info
-        
-        def neighbours(self, node):
-            return self.fonction_voisins(node) 
+    
+    def __init__(self, fonction_voisins, heuristique_dico=None):
+        self.fonction_voisins = fonction_voisins
+        if heuristique_dico:
+            self.heuristique_dico = heuristique_dico
+        else:
+            self.heuristique_dico = {}
+   
+    def neighbours(self, node):
+        return self.fonction_voisins(node)
 
-        def heuristique(self, a, dico):
-            if type(a)==tuple and self.heuristique_info != {} and a[0] in self.heuristique_info:
-                distance_fin = self.heuristique_info[a[0]]
-                fatigue = a[1]
-                if dico[a] == 0: return 0
-                return distance_fin*fatigue + dico[a]
-            return dico[a]
+    def heuristique(self, v, fatigue):
+        if v in self.heuristique_dico:
+            return self.heuristique_dico[v] * fatigue
+        return 0
 
-edges={'v0': [('v1', 21), ('v2', 12)], 'v1': [('v0', 74), ('v2', 32)]}
+
+            
+

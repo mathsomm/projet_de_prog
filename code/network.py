@@ -100,8 +100,9 @@ class Network:
 
 
     # fabrique un objet GraphImplicit et lui donne la fonction "fonction_voisins" qui va avec
-    def build_implicit_graph(self, pareto=False, heuristique=False) -> GraphImplicit:
-        def fonction_voisins(state):  # on définit ici la fameuse focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
+    def build_implicit_graph(self, précalcul_heuristique=True) -> GraphImplicit:
+        
+        def fonction_voisins(state):  # on définit ici la focntion qui permet de récupérer les voisins. C'est celle qui est utilisée par GraphImplicit
             if state == self.start:
                 return [((self.start, 1), 0)]
                 # On commence au point de départ avec une fatigue de 1, coût 0. En effet, il faut faire le pond entre le départ dans le monde simple et le départ dans le monde étnedu
@@ -124,54 +125,10 @@ class Network:
 
             # cas du noeud final: il n'a pas de voisins sortants
             return []
-
-        # On retourne un objet GraphImplicit qui utilisera cette fonction
-
-        def fonction_voisins_pareto(state):  #même fonction mais ajoute une condition pour implémenter la méthode de prunning
-            if state == self.start:
-                return [((self.start, 1), 0)]
-            if isinstance(state, tuple):
-                u, fatigue_actuelle = state
-
-                voisins = []
-                for (v, longueur, fatigue_route) in self._roads.get(u, []):
-                    # on teste si on a pas déjà trouvé un v mieux 
-                    if v not in self.mémoire_pareto:  #c'est le cas ou on découvre v pour la première fois
-                        nouvelle_fatigue = fatigue_actuelle + fatigue_route
-                        temps_parcours = longueur * fatigue_actuelle
-                        voisins.append(((v, nouvelle_fatigue), temps_parcours))
-                        self.mémoire_pareto[v] = [(nouvelle_fatigue,temps_parcours)]
-                    # cas ou on déjà rencontré v
-                    else:
-                        nouvelle_fatigue = fatigue_actuelle + fatigue_route
-                        temps_parcours = longueur * fatigue_actuelle
-                        #si je ne trouve pas un (v,f,d) meilleur, alors je ne peux pas écarter ce candidat et je le traite: la fonction voisin doit le renvoyer
-                        if not any( (nouvelle_fatigue>=x[0] and temps_parcours >=x[1])  for x in self.mémoire_pareto[v] ):                    
-                            voisins.append(((v, nouvelle_fatigue), temps_parcours))
-                            self.mémoire_pareto[v].append((nouvelle_fatigue,temps_parcours))
-                if u == self.end:
-                    voisins.append((self.end, 0))
-                return voisins
-            return []
         
-        if heuristique:
-            inverse_graph = self.build_simple_graph().graphe_inverse()
-            if inverse_graph is None:
-                print("ERROR: graphe_inverse() returned None")
-                heuristique_info = {}
-            else:
-                heuristique_info = inverse_graph.shortest_path(self.end, self.start, return_DISTANCE=True)
-                print("----fin calcul heuristique")
-                if heuristique_info is None:
-                    print("ERROR: No path found from end to start")
-                    heuristique_info =  {}
+        h_dico = {}
+        if précalcul_heuristique:
+            g_simple_inv = self.build_simple_graph().graphe_inverse()
+            h_dico = g_simple_inv.shortest_path(self.end, self.start, return_DISTANCE=True)
     
-            if heuristique and pareto:
-                return GraphImplicit(fonction_voisins_pareto, heuristique_info=heuristique_info)
-            else:
-                return GraphImplicit(fonction_voisins, heuristique_info=heuristique_info)
-        else:
-            if pareto:
-                return GraphImplicit(fonction_voisins_pareto)
-            else:
-                return GraphImplicit(fonction_voisins)
+        return GraphImplicit(fonction_voisins, heuristique_dico=h_dico)
