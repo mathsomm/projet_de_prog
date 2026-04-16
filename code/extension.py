@@ -1,11 +1,15 @@
-from network import Network 
+from network import Network
+from graph import GraphImplicit
 import numpy as np
 class Mission:
-    def __init__(self, missions, file, start):  
+    def __init__(self, missions, file):  
         self.missions=missions # list of missions (start, end)
         self._roads = Network.from_file(file)._roads # {node: [(node, length, fatigue),...]}
-        self.start = start
-
+        self.start, self.end = missions[0][0], missions[-1][1]
+        self.FATIGUE_MAX = 1
+        for node in self._roads:
+            for (v, d, f) in self._roads[node]:
+                self.FATIGUE_MAX += f
         
 
     def temps_chemin(self, path): 
@@ -24,11 +28,8 @@ class Mission:
     def temps_affile(self, missions): 
 
         # trouver le temps d'affile pour un chemin donné 
-        
         Liste_entiere = [a  for u in missions for a in u]
         list_sommets = []
-        
-
         for i in range(len(Liste_entiere)-1):
             new_roads = self._roads.copy()
             current_f = self.temps_chemin(list_sommets)[1]
@@ -43,6 +44,42 @@ class Mission:
         
         return self.temps_chemin(list_sommets), list_sommets
     
+    def temps_affile_2(self, precalcul_heuristique=False):
+        # construction du graphe
+        def fonction_voisin(state):
+            if state == self.start:
+                return [((self.start, 1, 0), 0)] # on rajoute un 0 pour le nb de missions faites
+                    # On commence au point de départ avec une fatigue de 1, coût 0. 
+
+            # Cas d'un état (sommet, fatigue)
+            if isinstance(state, tuple):
+                u, fatigue_actuelle, nb_missions = state
+                voisins = []
+                
+                for (v, longueur, fatigue_route) in self._roads.get(u, []):
+                    nouvelle_fatigue = fatigue_actuelle + fatigue_route
+                    temps_parcours = longueur * fatigue_actuelle
+                    
+                    if u == self.missions[nb_missions]:
+                        nb_missions += 1
+                    voisins.append(((v, nouvelle_fatigue, nb_missions), temps_parcours))
+                
+                # Si on est au sommet d'arrivée, on ajoute une transition vers le noeud final
+                if u == self.end:
+                    voisins.append((self.end, 0))
+                    
+                return voisins
+
+                # cas du noeud final: il n'a pas de voisins sortants
+            return []
+        h_dico = {}
+        if precalcul_heuristique:
+            g_simple_inv = self.build_simple_graph().graphe_inverse()
+            h_dico = g_simple_inv.shortest_path(self.end, self.start, return_DISTANCE=True)
+
+        g = GraphImplicit(fonction_voisin, heuristique_dico=h_dico)
+        return g.shortest_path2(self.start, self.end, pareto=True, heuristique=True)
+
     def temps_choix(self): 
         # trouver le temps de choix pour un chemin choisi 
         missions_faites = [(self.start, self.start)]

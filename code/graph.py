@@ -176,6 +176,8 @@ class GraphImplicit(Graph):
         if v in self.heuristique_dico:
             return self.heuristique_dico[v] * fatigue
         return 0
+    
+    
 
 
             
