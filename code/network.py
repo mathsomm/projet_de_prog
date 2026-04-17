@@ -66,7 +66,7 @@ class Network:
         random.shuffle(remaining_nodes)
         
         # Add 1-3 random intermediate nodes to the path
-        num_intermediate = random.randint(1, len(remaining_nodes)//10 +1)
+        num_intermediate = random.randint(1, len(remaining_nodes)//5 +1)
         print("num_intermediate", num_intermediate, "remaining_nodes", len(remaining_nodes))
         path_nodes.extend(remaining_nodes[:num_intermediate])
         path_nodes.append(end)

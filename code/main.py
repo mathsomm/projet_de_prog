@@ -11,8 +11,12 @@ network_file = "examples/medium-smallfatigue.txt"
 network = Network.from_file(network_file)
 #print(network.build_extended_graph().shortest_path("lozere", "saclay"))
 
-def benchmark_different_sizes(max_nodes=50, step=5, repetitions=3):
+def benchmark_different_sizes(max_nodes=50, step=5, repetitions=3, loi_log=False):
     sizes = list(range(10, max_nodes + 1, step))
+    from math import log10
+    if loi_log: 
+        B = [k*10**i for i in range(2, int(log10(max_nodes)))  for k in range(1, 10)]
+        sizes = [B[step*k] for k in range(0, len(B)//step)]
     results = {
         "simple_graph": [],
         "implicit_graph_no_heuristic": [],
@@ -37,7 +41,7 @@ def benchmark_different_sizes(max_nodes=50, step=5, repetitions=3):
         for rep in range(repetitions):
             # Créer un graphe aléatoire
             # graphe no fatigue
-            g = Network.create_graph(size, distance_range=(10, 100), fatigue_range=(1, 1))
+            g = Network.create_graph(size, distance_range=(10, 100), fatigue_range=(1, 10))
             
             # Test 1: Simple graph
             try:
@@ -164,7 +168,7 @@ def test_multitude_missions():
 
 
 # Lancer le benchmark
-sizes, results = benchmark_different_sizes(max_nodes=100000, step=5000, repetitions=10)
+sizes, results = benchmark_different_sizes(max_nodes=1000, step=20, repetitions=100)
 plot_results(sizes, results)
 #comparaison_duree()
 #test_multitude_missions()
