@@ -40,13 +40,13 @@ def benchmark_different_sizes(max_nodes=50, step=5, repetitions=3, loi_log=False
         
         for rep in range(repetitions):
             # Créer un graphe aléatoire
-            # graphe no fatigue
-            g = Network.create_graph(size, distance_range=(10, 100), fatigue_range=(1, 10))
+            # graphe fatigue
+            g = Network.create_graph(size, distance_range=(10, 100), fatigue_range=(1, 1000))
             
             # Test 1: Simple graph
             try:
                 t = time()
-                g.build_simple_graph().shortest_path(g.start, g.end)
+                #g.build_simple_graph().shortest_path(g.start, g.end)
                 times_simple.append(time() - t)
             except Exception as e:
                 print(f"  ❌ Simple graph failed: {e}")
@@ -54,7 +54,7 @@ def benchmark_different_sizes(max_nodes=50, step=5, repetitions=3, loi_log=False
             # Test 2: Implicit graph without heuristic, no pareto
             try:
                 t = time()
-                g.build_implicit_graph(précalcul_heuristique=False).shortest_path2(g.start, g.end, pareto=False)
+                #g.build_implicit_graph(précalcul_heuristique=False).shortest_path2(g.start, g.end, pareto=False)
                 times_implicit_no_h.append(time() - t)
             except Exception as e:
                 print(f"  ❌ Implicit no heuristic failed: {e}")
@@ -62,7 +62,7 @@ def benchmark_different_sizes(max_nodes=50, step=5, repetitions=3, loi_log=False
             # Test 3: Implicit graph with heuristic, no pareto
             try:
                 t = time()
-                g.build_implicit_graph(précalcul_heuristique=True).shortest_path2(g.start, g.end, pareto=False, heuristique=True)
+                #g.build_implicit_graph(précalcul_heuristique=True).shortest_path2(g.start, g.end, pareto=False, heuristique=True)
                 times_implicit_h.append(time() - t)
             except Exception as e:
                 print(f"  ❌ Implicit with heuristic failed: {e}")
@@ -78,7 +78,7 @@ def benchmark_different_sizes(max_nodes=50, step=5, repetitions=3, loi_log=False
             # Test 5: Implicit graph with pareto and heuristic
             try:
                 t = time()
-                g.build_implicit_graph(précalcul_heuristique=True).shortest_path2(g.start, g.end, pareto=True, heuristique=True)
+                #g.build_implicit_graph(précalcul_heuristique=True).shortest_path2(g.start, g.end, pareto=True, heuristique=True)
                 times_pareto_h.append(time() - t)
             except Exception as e:
                 print(f"  ❌ Implicit pareto + heuristic failed: {e}")
@@ -168,7 +168,7 @@ def test_multitude_missions():
 
 
 # Lancer le benchmark
-sizes, results = benchmark_different_sizes(max_nodes=1000, step=20, repetitions=100)
+sizes, results = benchmark_different_sizes(max_nodes=1000000, step=1, repetitions=3, loi_log=True)
 plot_results(sizes, results)
 #comparaison_duree()
 #test_multitude_missions()
