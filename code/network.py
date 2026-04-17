@@ -54,7 +54,7 @@ class Network:
                 end = random.choice(nodes)
         
         # Generate random number of edges
-        nb_edges = random.randint(nb_nodes, nb_nodes * nb_nodes - 10)
+        nb_edges = random.randint(nb_nodes, nb_nodes * 20)
         
         # Initialize adjacency list with all nodes
         roads = {node: [] for node in nodes}
@@ -66,7 +66,8 @@ class Network:
         random.shuffle(remaining_nodes)
         
         # Add 1-3 random intermediate nodes to the path
-        num_intermediate = random.randint(1, min(3, len(remaining_nodes)))
+        num_intermediate = random.randint(1, len(remaining_nodes)//10 +1)
+        print("num_intermediate", num_intermediate, "remaining_nodes", len(remaining_nodes))
         path_nodes.extend(remaining_nodes[:num_intermediate])
         path_nodes.append(end)
         
@@ -80,7 +81,7 @@ class Network:
             edges_created += 1
         
         # Create additional random edges until we reach the target number
-        max_attempts = nb_edges * 10  # Avoid infinite loop
+        max_attempts = nb_edges * 5  # Avoid infinite loop
         attempts = 0
         
         while edges_created < nb_edges and attempts < max_attempts:
@@ -107,7 +108,7 @@ class Network:
         
         print(f"Generated graph with {nb_nodes} nodes and {edges_created} edges")
         print(f"Start: {start}, End: {end}")
-        print(f"✅ Guaranteed path exists: {' → '.join(path_nodes)}")
+        print(f"✅ Guaranteed path exists: {len(path_nodes)}")
         
         return cls(roads=roads, start=start, end=end)
 

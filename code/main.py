@@ -164,7 +164,7 @@ def test_multitude_missions():
 
 
 # Lancer le benchmark
-sizes, results = benchmark_different_sizes(max_nodes=10000, step=10, repetitions=1)
+sizes, results = benchmark_different_sizes(max_nodes=100000, step=5000, repetitions=10)
 plot_results(sizes, results)
 #comparaison_duree()
 #test_multitude_missions()
