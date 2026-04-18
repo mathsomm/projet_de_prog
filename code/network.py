@@ -38,40 +38,31 @@ class Network:
 
     @classmethod
     def create_graph(cls, nb_nodes, distance_range=(10, 1000), fatigue_range=(1, 10), start=None, end=None):
-        import random
-        from collections import deque
-        
-        # Generate node names
+        import random        
         nodes = [f"v{i}" for i in range(nb_nodes)]
         
-        # Choose start and end nodes if not specified
+        # choisir début et fin
         if start is None:
             start = random.choice(nodes)
         if end is None:
             end = random.choice(nodes)
-            # Make sure start and end are different
             while end == start:
                 end = random.choice(nodes)
         
-        # Generate random number of edges
         nb_edges = random.randint(nb_nodes, nb_nodes * 20)
         
-        # Initialize adjacency list with all nodes
         roads = {node: [] for node in nodes}
         
-        # Create a guaranteed path from start to end
-        # by selecting random intermediate nodes and connecting them in sequence
+        # créer un chemin garantissant le fonctionnement
         path_nodes = [start]
         remaining_nodes = [n for n in nodes if n != start and n != end]
         random.shuffle(remaining_nodes)
         
-        # Add 1-3 random intermediate nodes to the path
+        # Ajouter ce chemin
         num_intermediate = random.randint(1, len(remaining_nodes)//5 +1)
-        print("num_intermediate", num_intermediate, "remaining_nodes", len(remaining_nodes))
         path_nodes.extend(remaining_nodes[:num_intermediate])
         path_nodes.append(end)
         
-        # Create edges along the guaranteed path
         edges_created = 0
         for i in range(len(path_nodes) - 1):
             u, v = path_nodes[i], path_nodes[i + 1]
@@ -80,35 +71,30 @@ class Network:
             roads[u].append((v, distance, fatigue))
             edges_created += 1
         
-        # Create additional random edges until we reach the target number
-        max_attempts = nb_edges * 5  # Avoid infinite loop
+        # Créer les arretes additionnelles 
+        max_attempts = nb_edges * 5  # Eviter les boucles
         attempts = 0
         
         while edges_created < nb_edges and attempts < max_attempts:
             attempts += 1
             
-            # Pick two random different nodes
             u = random.choice(nodes)
             v = random.choice(nodes)
             
             if u == v:
                 continue
             
-            # Check if edge already exists
-            if any(dest == v for dest, _, _ in roads[u]):
+            if any(dest == v for dest, d, f in roads[u]):
                 continue
             
-            # Generate random distance and fatigue
             distance = random.randint(distance_range[0], distance_range[1])
             fatigue = random.randint(fatigue_range[0], fatigue_range[1])
             
-            # Add edge (directed)
             roads[u].append((v, distance, fatigue))
             edges_created += 1
         
         print(f"Generated graph with {nb_nodes} nodes and {edges_created} edges")
-        print(f"Start: {start}, End: {end}")
-        print(f"✅ Guaranteed path exists: {len(path_nodes)}")
+        print(f"Un bon chemin existe, de longueur: {len(path_nodes)}")
         
         return cls(roads=roads, start=start, end=end)
 
@@ -135,9 +121,6 @@ class Network:
    
 
     def build_simple_graph(self) -> Graph:
-        """
-        Builds an object of type Graph from the network, by ignoring the fatigue coefficient. 
-        """
         edges={}
         for e in self._roads:
             edges[e]=[]

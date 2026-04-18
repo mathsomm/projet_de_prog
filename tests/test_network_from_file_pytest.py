@@ -5,8 +5,9 @@ sys.path.append(str(ROOT / "code"))
 
 NET_DIR = ROOT / "examples"
 
-import pytest
+#import pytest
 from network import Network
+from extension import Mission
 
 def test_network_small():
     # Setup
@@ -61,7 +62,28 @@ def test_build_extended_graph():
 def test_shortest_path():
     network = Network.from_file(NET_DIR / "small.txt")
     extended_graph = network.build_extended_graph()
-    result = extended_graph.shortest_path(network.start, network.end) 
+    result = extended_graph.shortest_path(network.start, network.end)
+    assert result[0] == 125
+    assert result[1] == ['lozere', ('lozere', 1), ('guichet', 1), ('ensae', 2), ('saclay', 2), 'saclay']
+
+
+def test_shortest_path_2():
+    network = Network.from_file(NET_DIR / "small.txt")
+    extended_graph = network.build_implicit_graph(précalcul_heuristique=True)
+    
+    result = extended_graph.shortest_path2(network.start, network.end, pareto=True, heuristique=True) 
+    assert result[0] == 125
+    assert result[1] == ['lozere', ('lozere', 1), ('guichet', 1), ('ensae', 2), ('saclay', 2), 'saclay']
+
+    result = extended_graph.shortest_path2(network.start, network.end, pareto=False, heuristique=True) 
+    assert result[0] == 125
+    assert result[1] == ['lozere', ('lozere', 1), ('guichet', 1), ('ensae', 2), ('saclay', 2), 'saclay']
+
+    result = extended_graph.shortest_path2(network.start, network.end, pareto=True, heuristique=False) 
+    assert result[0] == 125
+    assert result[1] == ['lozere', ('lozere', 1), ('guichet', 1), ('ensae', 2), ('saclay', 2), 'saclay']
+
+    result = extended_graph.shortest_path2(network.start, network.end, pareto=False, heuristique=False) 
     assert result[0] == 125
     assert result[1] == ['lozere', ('lozere', 1), ('guichet', 1), ('ensae', 2), ('saclay', 2), 'saclay']
 
@@ -70,3 +92,20 @@ def test_neighbours_GraphImplicit():
     
     n = network_test.build_implicit_graph().neighbours(('v0',2))
     assert n == [(('v1', 4), 42), (('v2', 6), 24)]
+
+
+def test_missions():
+    mission_test = Mission( [("v0", "v1"), ("v4", "v0"), ("v3", "v4")], "",
+        {
+            "v0": [("v1", 100, 2), ("v2", 10, 15)],
+            "v1": [("v2", 200, 4)],
+            "v2": [("v3", 100, 4)],
+            "v3": [("v4", 80, 5), ("v5", 100, 1)],
+            "v4": [("v5", 10, 1)],
+            "v5": [("v0", 75, 1)],
+
+        }
+    )
+    print(mission_test.temps_affile())
+    print()
+    print(mission_test.temps_choix())
