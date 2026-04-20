@@ -45,8 +45,7 @@ def test_multitude_missions():
 
         }
     )
-    #print("Le temps minimal possible est:", mission_test.temps_affile_2())
-    print("Et si on peut choisir l'odre des missions: ", mission_test.temps_choix())
+    print("Le temps minimal possible est:", mission_test.temps_affile_2())
 
 #####################################################################
 #################         CODE      #####################################

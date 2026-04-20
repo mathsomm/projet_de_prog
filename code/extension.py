@@ -45,7 +45,6 @@ class Mission:
         def fonction_voisin(state):
             L = [a  for u in self.missions for a in u]
             if state == self.start:
-                print("start", [((self.start, 1, 0), 0)])
                 return [((self.start, 1, 0), 0)] # on rajoute un 0 pour le nb de missions faites
                     # On commence au point de départ avec une fatigue de 1, coût 0. 
 
@@ -83,12 +82,11 @@ class Mission:
         liste_sommets = []
         while len(missions_faites) != len(self.missions):
             gr = Network(roads=self._roads, start=missions_faites[-1][1], 
-                          end="v0")
-            distance_pt = gr.build_extended_graph().shortest_path(missions_faites[-1][1], "hhy", True)
+                          end="")
+            distance_pt = gr.build_extended_graph().shortest_path(missions_faites[-1][1], "v4", True)
             print(missions_faites[-1][1])
             # Transformer distance_pt pour avoir point = distance
             distance_dict = {k[0]: v for k, v in distance_pt.items()}
-            print(distance_dict)
             # Sélectionner la mission non faite avec la distance minimale
             remaining_missions = [m for m in self.missions if m not in missions_faites]
             mission = min(remaining_missions, key=lambda x: distance_dict[x[0]])
