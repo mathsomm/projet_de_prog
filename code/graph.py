@@ -145,7 +145,6 @@ class Graph:
                 v, nouvelle_fatigue = state_voisin
                 nouveau_temps_total = temps_total + poids_arete 
                 # Calcul du A* : f(n) = g(n) + h(n)
-                # (Il faudra
                 if heuristique:
                     h_score = self.heuristique(v, nouvelle_fatigue)
                     nouveau_f_score = nouveau_temps_total + h_score
