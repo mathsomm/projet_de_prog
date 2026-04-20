@@ -106,6 +106,4 @@ def test_missions():
 
         }
     )
-    print(mission_test.temps_affile())
-    print()
-    print(mission_test.temps_choix())
+    assert mission_test.temps_affile_2()[0] == 10155

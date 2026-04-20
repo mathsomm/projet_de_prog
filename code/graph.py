@@ -72,7 +72,7 @@ class Graph:
                 break
             node_distance = DISTANCE[node]
             # Si on a atteint la destination, on peut s'arrêter
-            if node == fin:
+            if node == fin and not return_DISTANCE:
                 Vu[node] = node_distance
                 break
             #exploration des voisins   
